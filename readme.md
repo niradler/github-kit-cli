@@ -7,3 +7,7 @@ github sdk wrapper to run as cli
 ```
 gkc search repos -q="org:niradler"
 ```
+
+```
+gkc any search repos -p="q=org:niradler"
+```

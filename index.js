@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 const Yargs = require("yargs"); // eslint-disable-line
 const GithubApi = require("./GithubApi");
+const querystring = require("querystring");
 
 const initGithub = argv => {
   const opt = {};
@@ -28,6 +29,10 @@ const map = (argv, data) => {
     fields.foreach(f => (obj[f] = d[f]));
     return obj;
   });
+};
+
+const transformParams = params => {
+  return querystring.decode(params);
 };
 
 Yargs.command(
@@ -60,6 +65,42 @@ Yargs.command(
     }
   }
 )
+  .command(
+    "any [domain] [action]",
+    "query any domain on github sdk",
+    yargs => {
+      yargs.positional("action", {
+        describe: "action",
+        require: true
+      });
+
+      yargs.positional("domain", {
+        describe: "domain",
+        require: true
+      });
+
+      yargs.option("params", {
+        describe: "params",
+        alias: "p",
+        require: true
+      });
+    },
+    async argv => {
+      try {
+        let r = [];
+        if (argv.verbose) console.info("verbose is on.", argv);
+        const githubApi = initGithub(argv);
+        const params = transformParams(argv.params);
+        const res = await githubApi.any(argv.domain, argv.action, params);
+        r = res.data;
+        if (argv.map) r = map(argv, r.items);
+        if (argv.filter) r = filter(argv, r.items);
+        console.log(r);
+      } catch (error) {
+        console.error(error.message);
+      }
+    }
+  )
   .option("auth", {
     alias: "a",
     type: "string",
