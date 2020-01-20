@@ -59,6 +59,14 @@ Yargs.command(
   yargs => {
     yargs.positional("action", {
       describe: "search action",
+      choices: [
+        "issuesAndPullRequests",
+        "repos",
+        "users",
+        "code",
+        "issues",
+        "commits"
+      ],
       require: true
     });
 
@@ -90,6 +98,22 @@ Yargs.command(
   yargs => {
     yargs.positional("action", {
       describe: "git action",
+      choices: [
+        "createBlob",
+        "getBlob",
+        "createCommit",
+        "getCommit",
+        "listMatchingRefs",
+        "getRef",
+        "createRef",
+        "updateRef",
+        "deleteRef",
+        "createTag",
+        "getTag",
+        "createTree",
+        "getTree",
+        "listRefs"
+      ],
       require: true
     });
 
@@ -152,6 +176,35 @@ Yargs.command(
   yargs => {
     yargs.positional("action", {
       describe: "pulls action",
+      choices: [
+        "list",
+        "create",
+        "listCommentsForRepo",
+        "getComment",
+        "updateComment",
+        "deleteComment",
+        "get",
+        "update",
+        "listComments",
+        "createReviewCommentReply",
+        "createComment",
+        "listCommits",
+        "listFiles",
+        "checkIfMerged",
+        "merge",
+        "listReviewRequests",
+        "createReviewRequest",
+        "deleteReviewRequest",
+        "listReviews",
+        "createReview",
+        "getReview",
+        "deletePendingReview",
+        "updateReview",
+        "getCommentsForReview",
+        "dismissReview",
+        "submitReview",
+        "updateBranch"
+      ],
       require: true
     });
 
@@ -183,6 +236,27 @@ Yargs.command(
   yargs => {
     yargs.positional("action", {
       describe: "gists action",
+      choices: [
+        "listPublic",
+        "listStarred",
+        "listStarred",
+        "update",
+        "delete",
+        "listComments",
+        "createComment",
+        "getComment",
+        "updateComment",
+        "deleteComment",
+        "listCommits",
+        "fork",
+        "listForks",
+        "list",
+        "star",
+        "unstar",
+        "checkIsStarred",
+        "getRevision",
+        "listPublicForUser"
+      ],
       require: true
     });
 
