@@ -1,5 +1,10 @@
 const Octokit = require("@octokit/rest");
-const { searchSchema } = require("./schemas");
+const {
+  searchSchema,
+  gistsSchema,
+  pullsSchema,
+  gitSchema
+} = require("./schemas");
 
 class GithubApi {
   constructor({ auth }) {
@@ -9,15 +14,28 @@ class GithubApi {
     this.octokit = new Octokit(opt);
   }
 
+  git(action, params = {}) {
+    const valid = gitSchema.validate({ action, params });
+    if (valid.error) throw new Error(valid.error);
+
+    return this.octokit.git[action](params);
+  }
+
   repos(action, params = {}) {
     return this.octokit.repos[action](params);
   }
 
   pulls(action, params = {}) {
+    const valid = pullsSchema.validate({ action, params });
+    if (valid.error) throw new Error(valid.error);
+
     return this.octokit.pulls[action](params);
   }
 
   gists(action, params = {}) {
+    const valid = gistsSchema.validate({ action, params });
+    if (valid.error) throw new Error(valid.error);
+
     return this.octokit.gists[action](params);
   }
 

@@ -22,7 +22,10 @@ const filter = (argv, data) => {
     : argv.filter;
   let value = argv.filter.includes("=") ? argv.filter.split("=")[1] : null;
 
+  if (value === "true" || value === "false") value = value === "true";
   if (value === null) return data.filter(d => d[field]);
+  if (!isNaN(value) && value !== true && value !== false) value = Number(value);
+
   return data.filter(d => d[field] === value);
 };
 
@@ -34,6 +37,16 @@ const map = (argv, data) => {
     fields.forEach(f => (obj[f] = d[f]));
     return obj;
   });
+};
+
+const handleMapFilter = (argv, r) => {
+  if (argv.map || argv.filter) {
+    r = r.items ? r.items : r;
+    if (argv.filter) r = filter(argv, r);
+    if (argv.map) r = map(argv, r);
+  }
+
+  return r;
 };
 
 const transformParams = params => {
@@ -49,26 +62,179 @@ Yargs.command(
       require: true
     });
 
-    yargs.option("q", {
-      describe: "search query",
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
       require: true
     });
   },
   async argv => {
     try {
-      let r = [];
+      let r = { error: "not found" };
       if (argv.verbose) console.info("verbose is on.", argv);
       const githubApi = initGithub(argv);
-      const res = await githubApi.search(argv.action, { q: argv.q });
-      r = res.data;
-      if (argv.map || argv.filter) {
-        r = r.items;
-        if (argv.map) r = map(argv, r);
-        if (argv.filter) r = filter(argv, r);
-      }
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.search(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
       console.log(r);
     } catch (error) {
-      console.error(error.message);
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
+    }
+  }
+);
+
+Yargs.command(
+  "git [action]",
+  "git actions",
+  yargs => {
+    yargs.positional("action", {
+      describe: "git action",
+      require: true
+    });
+
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
+      require: true
+    });
+  },
+  async argv => {
+    try {
+      let r = { error: "not found" };
+      if (argv.verbose) console.info("verbose is on.", argv);
+      const githubApi = initGithub(argv);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.git(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
+      console.log(r);
+    } catch (error) {
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
+    }
+  }
+);
+
+Yargs.command(
+  "repos [action]",
+  "repos actions",
+  yargs => {
+    yargs.positional("action", {
+      describe: "repos action",
+      require: true
+    });
+
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
+      require: true
+    });
+  },
+  async argv => {
+    try {
+      let r = { error: "not found" };
+      if (argv.verbose) console.info("verbose is on.", argv);
+      const githubApi = initGithub(argv);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.repos(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
+      console.log(r);
+    } catch (error) {
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
+    }
+  }
+);
+
+Yargs.command(
+  "pulls [action]",
+  "pulls actions",
+  yargs => {
+    yargs.positional("action", {
+      describe: "pulls action",
+      require: true
+    });
+
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
+      require: true
+    });
+  },
+  async argv => {
+    try {
+      let r = { error: "not found" };
+      if (argv.verbose) console.info("verbose is on.", argv);
+      const githubApi = initGithub(argv);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.pulls(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
+      console.log(r);
+    } catch (error) {
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
+    }
+  }
+);
+
+Yargs.command(
+  "gists [action]",
+  "gists actions",
+  yargs => {
+    yargs.positional("action", {
+      describe: "gists action",
+      require: true
+    });
+
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
+      require: true
+    });
+  },
+  async argv => {
+    try {
+      let r = { error: "not found" };
+      if (argv.verbose) console.info("verbose is on.", argv);
+      const githubApi = initGithub(argv);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.gists(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
+      console.log(r);
+    } catch (error) {
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
+    }
+  }
+);
+
+Yargs.command(
+  "issues [action]",
+  "issues actions",
+  yargs => {
+    yargs.positional("action", {
+      describe: "issues action",
+      require: true
+    });
+
+    yargs.option("params", {
+      describe: "params",
+      alias: "p",
+      require: true
+    });
+  },
+  async argv => {
+    try {
+      let r = { error: "not found" };
+      if (argv.verbose) console.info("verbose is on.", argv);
+      const githubApi = initGithub(argv);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.issues(argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
+      console.log(r);
+    } catch (error) {
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
     }
   }
 );
@@ -95,17 +261,16 @@ Yargs.command(
   },
   async argv => {
     try {
-      let r = [];
+      let r = { error: "not found" };
       if (argv.verbose) console.info("verbose is on.", argv);
       const githubApi = initGithub(argv);
-      const params = transformParams(argv.params);
-      const res = await githubApi.any(argv.domain, argv.action, params);
-      r = res.data;
-      if (argv.map) r = map(argv, r.items);
-      if (argv.filter) r = filter(argv, r.items);
+      argv.params = transformParams(argv.params);
+      const res = await githubApi.any(argv.domain, argv.action, argv.params);
+      r = handleMapFilter(argv, res.data);
       console.log(r);
     } catch (error) {
-      console.error(error.message);
+      if (argv.verbose) console.log(error);
+      else console.error(error.message);
     }
   }
 );
