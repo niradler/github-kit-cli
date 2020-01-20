@@ -5,6 +5,14 @@ github sdk wrapper to run as cli, to get more details on params and options go t
 ## Usage
 
 ```
+gkc --help
+```
+
+```
+gkc store -a="github-api-key"
+```
+
+```
 gkc search repos -p="q=org:niradler"
 ```
 
