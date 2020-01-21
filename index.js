@@ -4,6 +4,7 @@ const GithubApi = require("./GithubApi");
 const querystring = require("querystring");
 const Configstore = require("configstore");
 const packageJson = require("./package.json");
+const choices = require("./choices");
 
 const config = new Configstore(packageJson.name, {});
 
@@ -53,25 +54,24 @@ const transformParams = params => {
   return querystring.decode(params);
 };
 
+const output = (r, argv) => {
+  if (argv && argv.stringify) r = JSON.stringify(r, null, 2);
+
+  console.log(r);
+};
+
 Yargs.command(
   "search [action]",
-  "search github",
+  "Search github",
   yargs => {
     yargs.positional("action", {
-      describe: "search action",
-      choices: [
-        "issuesAndPullRequests",
-        "repos",
-        "users",
-        "code",
-        "issues",
-        "commits"
-      ],
+      describe: "Search action",
+      choices: choices.search,
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -84,7 +84,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.search(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -94,31 +94,16 @@ Yargs.command(
 
 Yargs.command(
   "git [action]",
-  "git actions",
+  "Git actions",
   yargs => {
     yargs.positional("action", {
-      describe: "git action",
-      choices: [
-        "createBlob",
-        "getBlob",
-        "createCommit",
-        "getCommit",
-        "listMatchingRefs",
-        "getRef",
-        "createRef",
-        "updateRef",
-        "deleteRef",
-        "createTag",
-        "getTag",
-        "createTree",
-        "getTree",
-        "listRefs"
-      ],
+      describe: "Git action",
+      choices: choices.git,
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -131,7 +116,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.git(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -141,15 +126,16 @@ Yargs.command(
 
 Yargs.command(
   "repos [action]",
-  "repos actions",
+  "Repos actions",
   yargs => {
     yargs.positional("action", {
-      describe: "repos action",
+      describe: "Repos action",
+      choices: choices.repos,
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -162,7 +148,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.repos(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -176,40 +162,12 @@ Yargs.command(
   yargs => {
     yargs.positional("action", {
       describe: "pulls action",
-      choices: [
-        "list",
-        "create",
-        "listCommentsForRepo",
-        "getComment",
-        "updateComment",
-        "deleteComment",
-        "get",
-        "update",
-        "listComments",
-        "createReviewCommentReply",
-        "createComment",
-        "listCommits",
-        "listFiles",
-        "checkIfMerged",
-        "merge",
-        "listReviewRequests",
-        "createReviewRequest",
-        "deleteReviewRequest",
-        "listReviews",
-        "createReview",
-        "getReview",
-        "deletePendingReview",
-        "updateReview",
-        "getCommentsForReview",
-        "dismissReview",
-        "submitReview",
-        "updateBranch"
-      ],
+      choices: choices.pulls,
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -222,7 +180,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.pulls(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -232,36 +190,16 @@ Yargs.command(
 
 Yargs.command(
   "gists [action]",
-  "gists actions",
+  "Gists actions",
   yargs => {
     yargs.positional("action", {
-      describe: "gists action",
-      choices: [
-        "listPublic",
-        "listStarred",
-        "listStarred",
-        "update",
-        "delete",
-        "listComments",
-        "createComment",
-        "getComment",
-        "updateComment",
-        "deleteComment",
-        "listCommits",
-        "fork",
-        "listForks",
-        "list",
-        "star",
-        "unstar",
-        "checkIsStarred",
-        "getRevision",
-        "listPublicForUser"
-      ],
+      describe: "Gists action",
+      choices: choices.gists,
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -274,7 +212,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.gists(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -284,15 +222,15 @@ Yargs.command(
 
 Yargs.command(
   "issues [action]",
-  "issues actions",
+  "Issues actions",
   yargs => {
     yargs.positional("action", {
-      describe: "issues action",
+      describe: "Issues action",
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -305,7 +243,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.issues(argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -315,20 +253,20 @@ Yargs.command(
 
 Yargs.command(
   "any [domain] [action]",
-  "query any domain on github sdk",
+  "Query any domain on github sdk",
   yargs => {
     yargs.positional("action", {
-      describe: "action",
+      describe: "Action",
       require: true
     });
 
     yargs.positional("domain", {
-      describe: "domain",
+      describe: "Domain",
       require: true
     });
 
     yargs.option("params", {
-      describe: "params",
+      describe: "Params",
       alias: "p",
       require: true
     });
@@ -341,7 +279,7 @@ Yargs.command(
       argv.params = transformParams(argv.params);
       const res = await githubApi.any(argv.domain, argv.action, argv.params);
       r = handleMapFilter(argv, res.data);
-      console.log(r);
+      output(r, argv);
     } catch (error) {
       if (argv.verbose) console.log(error);
       else console.error(error.message);
@@ -351,12 +289,12 @@ Yargs.command(
 
 Yargs.command(
   "store",
-  "store keys and secret",
+  "Store keys and secret",
   yargs => {
     yargs.option("auth", {
       alias: "a",
       type: "string",
-      description: "github api key",
+      description: "Github api key",
       require: true
     });
   },
@@ -374,17 +312,22 @@ Yargs.command(
 Yargs.option("auth", {
   alias: "a",
   type: "string",
-  description: "github api key"
+  description: "Github api key"
 })
   .option("filter", {
     alias: "f",
     type: "string",
-    description: "filter result"
+    description: "Filter result"
   })
   .option("map", {
     alias: "m",
     type: "string",
-    description: "map result"
+    description: "Map result"
+  })
+  .option("stringify", {
+    alias: "s",
+    type: "boolean",
+    description: "Stringify result"
   })
   .option("verbose", {
     alias: "v",

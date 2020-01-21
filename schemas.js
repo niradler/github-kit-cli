@@ -1,24 +1,10 @@
 const Joi = require("@hapi/joi");
+const choices = require("./choices");
 
 const gitSchema = Joi.object()
   .keys({
     action: Joi.string()
-      .valid(
-        "createBlob",
-        "getBlob",
-        "createCommit",
-        "getCommit",
-        "listMatchingRefs",
-        "getRef",
-        "createRef",
-        "updateRef",
-        "deleteRef",
-        "createTag",
-        "getTag",
-        "createTree",
-        "getTree",
-        "listRefs"
-      )
+      .valid(...choices.git)
       .required(),
     params: Joi.object()
       .keys({})
@@ -29,14 +15,7 @@ const gitSchema = Joi.object()
 const searchSchema = Joi.object()
   .keys({
     action: Joi.string()
-      .valid(
-        "issuesAndPullRequests",
-        "repos",
-        "users",
-        "code",
-        "issues",
-        "commits"
-      )
+      .valid(...choices.search)
       .required(),
     params: Joi.object().keys({
       q: Joi.string().required()
@@ -47,27 +26,7 @@ const searchSchema = Joi.object()
 const gistsSchema = Joi.object()
   .keys({
     action: Joi.string()
-      .valid(
-        "listPublic",
-        "listStarred",
-        "listStarred",
-        "update",
-        "delete",
-        "listComments",
-        "createComment",
-        "getComment",
-        "updateComment",
-        "deleteComment",
-        "listCommits",
-        "fork",
-        "listForks",
-        "list",
-        "star",
-        "unstar",
-        "checkIsStarred",
-        "getRevision",
-        "listPublicForUser"
-      )
+      .valid(...choices.gists)
       .required(),
     params: Joi.object()
       .keys({})
@@ -78,35 +37,18 @@ const gistsSchema = Joi.object()
 const pullsSchema = Joi.object()
   .keys({
     action: Joi.string()
-      .valid(
-        "list",
-        "create",
-        "listCommentsForRepo",
-        "getComment",
-        "updateComment",
-        "deleteComment",
-        "get",
-        "update",
-        "listComments",
-        "createReviewCommentReply",
-        "createComment",
-        "listCommits",
-        "listFiles",
-        "checkIfMerged",
-        "merge",
-        "listReviewRequests",
-        "createReviewRequest",
-        "deleteReviewRequest",
-        "listReviews",
-        "createReview",
-        "getReview",
-        "deletePendingReview",
-        "updateReview",
-        "getCommentsForReview",
-        "dismissReview",
-        "submitReview",
-        "updateBranch"
-      )
+      .valid(...choices.pulls)
+      .required(),
+    params: Joi.object()
+      .keys({})
+      .unknown()
+  })
+  .unknown();
+
+const reposSchema = Joi.object()
+  .keys({
+    action: Joi.string()
+      .valid(...choices.repos)
       .required(),
     params: Joi.object()
       .keys({})
@@ -118,5 +60,6 @@ module.exports = {
   searchSchema,
   gistsSchema,
   pullsSchema,
-  gitSchema
+  gitSchema,
+  reposSchema
 };

@@ -3,7 +3,8 @@ const {
   searchSchema,
   gistsSchema,
   pullsSchema,
-  gitSchema
+  gitSchema,
+  reposSchema
 } = require("./schemas");
 
 class GithubApi {
@@ -22,6 +23,9 @@ class GithubApi {
   }
 
   repos(action, params = {}) {
+    const valid = reposSchema.validate({ action, params });
+    if (valid.error) throw new Error(valid.error);
+
     return this.octokit.repos[action](params);
   }
 
