@@ -26,5 +26,6 @@ gkc any search repos -p="q=org:niradler"
 ### Advance
 
 ```
+gkc repos listForUser --params="username=niradler" --map="name" --filter="fork=true"
 gkc repos listForUser -p="username=niradler" -m="name" -f="fork=true"
 ```
