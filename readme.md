@@ -27,5 +27,5 @@ gkc any search repos -p="q=org:niradler"
 
 ```
 gkc repos listForUser --params="username=niradler" --map="name" --filter="fork=true"
-repos listForUser --params="username=niradler&per_page=100" --map="name,has_issues,fork" -f="fork=false" -o="table"
+gkc repos listForUser --params="username=niradler&per_page=100" --map="name,has_issues,fork" -f="fork=false" -o="table"
 ```
