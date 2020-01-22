@@ -55,9 +55,22 @@ const transformParams = params => {
 };
 
 const output = (r, argv) => {
-  if (argv && argv.stringify) r = JSON.stringify(r, null, 2);
-
-  console.log(r);
+  switch (argv.outputFormat) {
+    case "stringify":
+      r = JSON.stringify(r, null, 2);
+      console.log(r);
+      break;
+    case "table":
+      if (r.items) r = r.items;
+      console.table(r);
+      break;
+    case "log":
+      console.log(r);
+      break;
+    default:
+      console.log(r);
+      break;
+  }
 };
 
 Yargs.command(
@@ -324,10 +337,12 @@ Yargs.option("auth", {
     type: "string",
     description: "Map result"
   })
-  .option("stringify", {
-    alias: "s",
-    type: "boolean",
-    description: "Stringify result"
+  .option("outputFormat", {
+    alias: "o",
+    type: "string",
+    choices: ["stringify", "table", "log"],
+    default: "log",
+    description: "Output format"
   })
   .option("verbose", {
     alias: "v",
