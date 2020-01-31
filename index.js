@@ -349,3 +349,8 @@ Yargs.option("auth", {
     type: "boolean",
     description: "Run with verbose logging"
   }).argv;
+
+if (Yargs.argv["_"].length == 0) {
+  Yargs.usage("gkc [domain] [action]");
+  Yargs.showHelp();
+}
