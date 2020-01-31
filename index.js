@@ -73,6 +73,8 @@ const output = (r, argv) => {
   }
 };
 
+Yargs.usage("gkc [domain] [action]");
+
 Yargs.command(
   "search [action]",
   "Search github",
@@ -351,6 +353,5 @@ Yargs.option("auth", {
   }).argv;
 
 if (Yargs.argv["_"].length == 0) {
-  Yargs.usage("gkc [domain] [action]");
   Yargs.showHelp();
 }
